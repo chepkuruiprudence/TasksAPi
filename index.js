@@ -26,7 +26,7 @@ app.post("/tasks", async (req, res) => {
 });
 
 //Get tasks
-app.get("/tasks", async (req, res) => {
+app.get("/tasks", async (_req, res) => {
  try{
   const tasks = await prisma.task.findMany({
    where: {
@@ -46,7 +46,7 @@ app.get("/tasks/:id", async (req, res) => {
  try {
    const task = await prisma.task.findUnique({
      where: {
-       id: Number(req.params.id),
+       id: req.params.id,
      },
    });
    res.status(200).json(task);
@@ -62,12 +62,9 @@ app.put("/tasks/:id", async (req, res) => {
   console.log("Req Params:", req.params);
 
   const{ id } = req.params;
-
-  
-
    const updatedTask = await prisma.task.update({
      where: {
-       id: Number(req.params.id),
+       id: req.params.id,
      },
      data: {
        title: req.body.title,
@@ -89,7 +86,7 @@ app.delete("/tasks/:id", async (req, res) => {
    console.log(id);
    await prisma.task.delete({
      where: {
-       id,
+      id: req.params.id,
      },
    });
    res.status(200).json({ message: "Task deleted successfully." });
